@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffebee; /* Light red background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .add-record {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .add-record button {
+            background-color: #4CAF50; /* Green button */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .record-box {
+            position: relative;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s;
+        }
+
+        .record-box:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .record-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .record-content {
+            font-size: 14px;
+            color: #333;
+            text-align: left;
+            margin: 0;
+        }
+        .record-box:hover .delete-link {
+            opacity: 1;
+        }
+
+        .logout {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logout button {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-link {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .delete-link:focus {
+            outline: none;
+        }
+
+        .delete-link:hover {
+            text-decoration: underline;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .search-container input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .home-page {
+            background-color: #FFC5C5;
+        }
+    </style>
+</head>
+<body class="home-page">
+    <div class="container">
+        <h1>Your Records</h1>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <form method="GET" action="{{ url_for('home') }}">
+                <input type="text" name="search" placeholder="Search records..." value="{{ request.args.get('search', '') }}">
+            </form>
+        </div>
+
+        <div class="add-record">
+            <button onclick="window.location.href='{{ url_for('add_record') }}'">Add New Record</button>
+        </div>
+
+        {% for record in records %}
+        <div class="record-box">
+            <span class="record-title">{{ record.title }}</span>
+            <p class="record-content">{{ record.content }}</p>
+            <form method="POST" action="{{ url_for('delete_record', record_id=record.id) }}">
+                <a href="#" class="delete-link" onclick="this.closest('form').submit(); return false;">Delete</a>
+            </form>
+        </div>
+        {% endfor %}
+
+        <div class="logout">
+            <form method="POST" action="{{ url_for('logout') }}">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
